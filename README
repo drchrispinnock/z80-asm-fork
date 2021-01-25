@@ -1,1 +1,11 @@
-See the doc directory
+
+This is the Z80 Assembler from 
+	http://wwwhomes.uni-bielefeld.de/achim/z80-asm.html
+
+I've forked it here to get it to build on Mac OS X Big Sur
+with GCC. I cannot get it to compile with Xcode clang at the
+moment.
+
+Changes:
+* One of the cpu pins had to be renamed to avoid a conflict
+* An error function needed to be added to lcd_display
