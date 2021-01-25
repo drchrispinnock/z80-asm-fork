@@ -16,7 +16,7 @@ else
  MON=monitor_cpu.exe
 endif
 
-CC=		gcc
+CC=		/usr/local/Cellar/gcc/10.2.0_3/bin/gcc-10
 CFLAGS=-O2 -Wall -D$(SYSTEM) $(DEFINES) -W -Wstrict-prototypes \
        -Wno-parentheses -fomit-frame-pointer -falign-functions=0
 LDFLAGS=
@@ -59,12 +59,12 @@ analyzer.o:	analyzer.c ../z80-cpu.h ../z80-global
 ssl_zds.o: ssl_zds.c ../z80-cpu.h ../z80-global zds_token
 
 $(LCD): lcd_display.o ../dummy.o ../cpu.a ../console.o ../asm.a hard.a
-	gcc -lc -o $(LCD) lcd_display.o ../dummy.o ../cpu.a ../console.o ../asm.a hard.a
+	$(CC) -lc -o $(LCD) lcd_display.o ../dummy.o ../cpu.a ../console.o ../asm.a hard.a
 $(CLK): hardware_clock.o
-	gcc -lc -o $(CLK) hardware_clock.o
+	$(CC) -lc -o $(CLK) hardware_clock.o
 $(MKP): make_ports.o
-	gcc -lc -o $(MKP) make_ports.o
+	$(CC) -lc -o $(MKP) make_ports.o
 $(IOP): port_io.o
-	gcc -lc -o $(IOP) port_io.o
+	$(CC) -lc -o $(IOP) port_io.o
 $(MON): monitor_cpu.o ../cpu.a ../console.o ../asm.a
-	gcc -lc -o $(MON) monitor_cpu.o ../cpu.a ../console.o ../asm.a
+	$(CC) -lc -o $(MON) monitor_cpu.o ../cpu.a ../console.o ../asm.a

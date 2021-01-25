@@ -25,3 +25,12 @@ Installation is very simple:
 If you wanna use this program under DO$ you may convert all sources including 
 makefile to CR/LF end of line. If you don't know how, it's your problem. 
 Don't use DO$!
+
+ON THE MAC
+----------
+
+  * Install gcc (e.g. brew install gcc)
+  * Adjust the Makefile to use it - set CC
+  * You need to adjust hardware/Makefile too
+  * Xcode clang will not build this
+

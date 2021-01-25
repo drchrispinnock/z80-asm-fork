@@ -12,7 +12,7 @@ DEFINES=-DFURTHER_HARDWARE -DPORT_BUFFER
 
 # set the appropriate install directories in your system
 
-MAN_DIR=/usr/local/man
+MAN_DIR=/usr/local/share/man
 BIN_DIR=/usr/local/bin
 
 #--------- You shouldn't need to change anything under this line ---------------
@@ -30,16 +30,19 @@ else
  MONI=z80-mon.exe
 endif
 
-CC=	gcc
+CC=	/usr/local/Cellar/gcc/10.2.0_3/bin/gcc-10
+AR=	/usr/local/Cellar/gcc/10.2.0_3/bin/gcc-ar-10
+
 CFLAGS=-O2 -Wall -D$(ZZ) -D$(SYSTEM) $(DEFINES) -W -Wstrict-prototypes \
        -Wno-parentheses -fomit-frame-pointer -falign-functions=0
 LDFLAGS=
 
-all:
-	cd hardware; $(MAKE) SYSTEM=$(SYSTEM) DEFINES="-D$(ZZZ) -D$(SYSTEM) $(DEFINES)" hard.a
+all: 
+	cd hardware; $(MAKE) SYSTEM=$(SYSTEM) DEFINES="-D$(ZZZ) -D$(SYSTEM) $(DEFINES)" CC=$(CC) hard.a
 	make $(ASM)
 	make $(MONI)
-	cd hardware; $(MAKE) SYSTEM=$(SYSTEM) DEFINES="-D$(ZZZ) -D$(SYSTEM) $(DEFINES)"
+	cd hardware; $(MAKE) SYSTEM=$(SYSTEM) DEFINES="-D$(ZZZ) -D$(SYSTEM) $(DEFINES)" CC=$(CC)
+
 
 clean:
 	$(RM) *.o
@@ -50,7 +53,7 @@ clean:
 	$(RM) .bus_proto
 	cd hardware; make SYSTEM=$(SYSTEM) clean
 
-install:
+install: all
 	chmod a+rx $(ASM) $(MONI); cp -p $(ASM) $(MONI) $(BIN_DIR)
 	chmod a+r doc/man/z80-*.1; cp -p doc/man/z80-*.1 $(MAN_DIR)/man1
 	chmod a+r doc/man/z80-*.3; cp -p doc/man/z80-*.3 $(MAN_DIR)/man3
@@ -109,15 +112,15 @@ keyboard.o: keyboard.c console.h
 asm.a: z80-cpu.o asm.o hash.o compile.o regs.o instr.o interrupt.o file.o \
        expression.o mini-display.o keyboard.o
 	$(RM) asm.a
-	ar rcs asm.a z80-cpu.o asm.o hash.o compile.o regs.o instr.o interrupt.o \
+	$(AR) rcs asm.a z80-cpu.o asm.o hash.o compile.o regs.o instr.o interrupt.o \
                  expression.o mini-display.o keyboard.o file.o
 
 cpu.a: execute.o decode-table.o decode.o memory.o ports.o
 	$(RM) cpu.a
-	ar rcs cpu.a execute.o decode-table.o decode.o memory.o ports.o
+	$(AR) rcs cpu.a execute.o decode-table.o decode.o memory.o ports.o
 
 
 $(ASM): z80-asm.o dummy.o asm.a $(HW)
-	gcc -lc -o $(ASM) z80-asm.o dummy.o asm.a $(HW)
+	$(CC) -lc -o $(ASM) z80-asm.o dummy.o asm.a $(HW)
 $(MONI): z80-mon.o cpu.a console.o asm.a $(HW)
-	gcc -lc -o $(MONI) z80-mon.o cpu.a console.o asm.a $(HW)
+	$(CC) -lc -o $(MONI) z80-mon.o cpu.a console.o asm.a $(HW)
